@@ -1,0 +1,86 @@
+body::-webkit-scrollbar {
+  display: none;
+}
+
+.profile {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+}
+
+.profile img {
+  position: absolute;
+  top: 35%;
+  border-radius: 50%;
+  transform: scale(2.5);
+}
+
+.profile h2 {
+  position: absolute;
+  top: 60%;
+  font-size: 4rem;
+}
+
+.callTimes {
+  width: 38%;
+  margin-top: 10%;
+  margin-left: 50%;
+
+}
+
+.Streak {
+  width: 38%;
+  margin-top: 3%;
+  margin-left: 50%;
+}
+
+.Streak .Collapsible {
+  background-color: #E5E5E5;
+  color: #000000;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 3rem;
+}
+
+.Lover {
+  width: 38%;
+  margin-top: 3%;
+  margin-left: 50%;
+}
+
+.Lover .Collapsible {
+  background-color: #E5E5E5;
+  color: #000000;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 3rem;
+}
+
+.callTimes .Collapsible {
+  background-color: #E5E5E5;
+  color: #000000;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 3rem;
+}
+
+.Collapsible  {
+  font-weight: 600;
+}
+
+.Collapsible p {
+  font-weight: 300;
+  font-size: 1rem;
+}

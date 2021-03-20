@@ -1,0 +1,61 @@
+body {
+	margin: 0;
+	background: #23272A;
+	font-family: 'Chakra Petch', sans-serif;
+	font-weight: 400;
+  color: #ffffff;
+}
+
+h1 {
+  margin-bottom: 0.1em;
+}
+
+.content-1 {
+  position: absolute;
+  left: 3rem;
+  top: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.content-2 {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  right: 10rem;
+  top: 30%;
+}
+
+.call {
+  position: relative;
+  margin-top: 5rem;
+  transform: rotate(10deg);
+  transition: transform 1000ms ease-in-out;
+}
+
+.call:hover {
+  transform: rotate(10deg) scale(1.2);
+}
+
+.streak {
+  transform: rotate(-20deg) scale(1.25);
+  transition: transform 1000ms ease-in-out;
+}
+
+.streak:hover {
+  transform: rotate(-20deg) scale(1.5);
+}
+
+.kiss {
+  margin-top: 15rem;
+  transform: scale(2);
+  transition: transform 1000ms ease-in-out;
+}
+
+.kiss:hover {
+  transform: scale(2.20);
+}
