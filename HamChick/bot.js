@@ -68,8 +68,8 @@ DiscordClient.on('message', async (message) => {
   const goodNight = RegExp(`\\b\\W*${server.gn}\\W*\\b`, 'i');
   const goodMorning = RegExp(`\\b\\W*${server.gm}\\W*\\b`, 'i');
 
-  if (message.content.startsWith(prefix) && DiscordClient.commands.has(cmd.slice(1))) {
-    DiscordClient.commands.get(cmd.slice(1)).execute(message, args);
+  if (message.content.startsWith(prefix) && DiscordClient.commands.has(cmd.slice(prefix.length))) {
+    DiscordClient.commands.get(cmd.slice(prefix.length)).execute(message, args);
   } else if (message.content.endsWith('.')) {
     try {
       const query = `http://api.giphy.com/v1/gifs/search?q=${message.content.slice(0, -1).replace(" ", "%20")}&api_key=${process.env.GIPHY_PASS}&limit=${process.env.GIF_LIMIT}`;
