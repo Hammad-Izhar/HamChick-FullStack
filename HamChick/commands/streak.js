@@ -1,40 +1,21 @@
-// async function streak(type, userID, client, message) {
-//   return await client.connect(async () => {
-//     try {
-//       const callTimes = client.db('HamChick').collection('callTimes');
+const UserConfig = require("../database/schema/UserConfig");
 
-//       let userObj = await callTimes.findOne({
-//         'id': userID
-//       });
-//       if (type == 'gn') {
-//         message.channel.send(`<@${userID}> is on a ${userObj.gnStreak}-night streak! 🌙`)
-//       } else if (type == 'supsup') {
-//         message.channel.send(`<@${userID}> is on a ${userObj.gmStreak}-day streak! 🌞`);
-//       }
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   });
-// }
-
-// module.exports = {
-//   name: `!streak`,
-//   description: "",
-//   execute(message, args) {
-//     let userID = args[1] ? args[1].replace(/[<>!@]/g, "") : message.author.id
-//     if (!((/gn/i).test(args[0])) && !((/supsup/i).test(args[0]))) {
-//       message.channel.send("That's not a valid streak name! You must say either 'gn' or 'supsup'.");
-//       return
-//     }
-//     let streakType = args[0].toLowerCase();
-
-//     const MongoClient = require('mongodb').MongoClient;
-//     const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.h1cxc.mongodb.net/HamChick?retryWrites=true&w=majority`;
-//     const client = new MongoClient(uri, {
-//       useNewUrlParser: true,
-//       useUnifiedTopology: true
-//     });
-
-//     streak(streakType, userID, client, message)
-//   }
-// }
+module.exports = {
+  name: "streak",
+  description: "Check your current streak!",
+  usage: "!streak <gn | gm> <user_ping>",
+  execute: async (message, args) => {
+    const userID = (args[1] ? args[1] : message.author.id).replace(/[<>!@]/g, "");
+    if (args[0].toLowerCase() !== "gn" || args[0].toLowerCase() !== "gm") {
+      return message.channel.send(`That's not a valid streak name! ${module.exports.usage}`);
+    }
+    const user = await UserConfig.findOne({
+      userID
+    });
+    if (args[0] === "gn") {
+      return message.channel.send(`<@${userID}> is on a ${user.callTimes.gnStreak}-night streak! 🌙`);
+    } else {
+      return message.channel.send(`<@${userID}> is on a ${user.callTimes.gmStreak}-day streak! 🌞`);
+    }
+  }
+}

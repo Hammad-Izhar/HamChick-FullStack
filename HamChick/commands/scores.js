@@ -1,51 +1,28 @@
-// const Discord = require('discord.js')
+const { MessageEmbed } = require("discord.js");
+const UserConfig = require("../database/schema/UserConfig");
 
-// async function scores(client, userID, message) {
-//   return await client.connect(async () => {
-//     const callTimes = client.db("HamChick").collection("callTimes");
-
-//     let userObj = await callTimes.findOne({
-//       'id': userID
-//     }).catch((err) => console.error(err))
-
-//     if (!userObj) {
-//       message.channel.send('Could not find user! :x:')
-//     } else {
-//       let s = "";
-//       for (i = 0; i < userObj.scores.length; i++) {
-//         time = userObj.scores.sort(function (a, b) {
-//           return b - a
-//         })[i];
-//         if (time >= 3600) {
-//           s += `${i + 1}. ${(time / 3600).toFixed(2)} hours\n`;
-//         } else if (time >= 60) {
-//           s += `${i + 1}. ${(time / 60).toFixed(2)} minutes\n`;
-//         } else {
-//           s += `${i + 1}. ${(time).toFixed(2)} seconds\n`;
-//         }
-//       }
-//       scoresEmbed = new Discord.MessageEmbed()
-//         .setTitle(`${userObj.username}'s Top 10 Call Times!`)
-//         .setColor(0xff0000)
-//         .setDescription(s);
-//       message.channel.send(scoresEmbed);
-//     }
-//   });
-// }
-
-// module.exports = {
-//   name: `!scores`,
-//   description: 'Lists the user\'s top 10 scores (shortest)!',
-//   execute(message, args) {
-//     argument = args[0] ? args[0] : message.author.id;
-//     let userID = argument.replace(/[<>!@]/g, "");
-
-//     const MongoClient = require('mongodb').MongoClient;
-//     const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.h1cxc.mongodb.net/HamChick?retryWrites=true&w=majority`;
-//     const client = new MongoClient(uri, {
-//       useNewUrlParser: true,
-//       useUnifiedTopology: true
-//     });
-//     scores(client, userID, message).then(client.close()).catch((err) => console.error(err));
-//   }
-// }
+module.exports = {
+  name: "scores",
+  description: "Lists a user's top n call times!",
+  usage: "!scores [user_ping] [num (≤ 25)]",
+  execute: async (message, args) => {
+    const userID = (args[0] ? args[0] : message.author.id).replace(/[<>@!]/g, "");
+    const num = (args[1] && Number(args[1]) <= 25 ? Number(args[1]) : 10);
+    const user = await UserConfig.findOne({userID});
+    const scores = [...user.callTimes.scores].sort((a, b) => b - a);
+    const outputEmbed = new MessageEmbed()
+      .setColor(0xff0000)
+      .setTitle(`${user.username}'s Top ${num} Call Times!`);
+    let output = "";
+    for (let i = 0; (i < scores.length && i < num); i++) {
+      if (scores[i] >= 3600) {
+        output += `${i + 1}. ${(scores[i] / 3600).toFixed(2)} hours\n`;
+      } else if (scores[i] >= 60) {
+        output += `${i + 1}. {(scores[i] / 60).toFixed(2)} minutes\n`;
+      } else {
+        output += `${i + 1}. ${(scores[i]).toFixed(2)} seconds\n`;
+      }
+    }
+    return message.channel.send(outputEmbed.setDescription(output));
+  }
+}
