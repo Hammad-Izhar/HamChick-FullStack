@@ -14,10 +14,6 @@ You can see the original source code in another GitHub repository on this GitHub
 
 To Do:
 
-- Fix Static Pages on the Website
-
-- Host on REPL.IT
-
 Contributions:
 
 - Hammad: Discord Bot, Express Server API, React Navbar and Animations

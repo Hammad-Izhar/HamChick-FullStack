@@ -4,6 +4,15 @@ import {Navbar} from '../../components/NavBar';
 import './index.css';
 import Collapsible from 'react-collapsible';
 
+function convertTime(time) {
+  if (time >= 3600) {
+    return `${time = (time / 3600).toFixed(2)} hours`;
+  } else if (time >= 60) {
+    return `${time = (time / 60).toFixed(2)} minutes`;
+  } else {
+    return `${time} seconds`
+  }
+}
 
 export function ProfilePage({
   history
@@ -23,10 +32,14 @@ export function ProfilePage({
   }, [user, history])
 
   if (!loading) {
-    const {userID, username, avatar, callTimes, marriage, streaks} = user.data
+    const {userID, username, avatar, callTimes, streaks} = user.data
+    let highscore = convertTime(callTimes.highscore);
+    let lowscore = convertTime(callTimes.lowscore);
+
+
 
     const avatarURL = `https://cdn.discordapp.com/avatars/${userID}/${avatar}.jpg`
-    return  (
+    return (
       <div>
       <Navbar />
       <div>
@@ -37,6 +50,8 @@ export function ProfilePage({
 
         <div className='callTimes'>
           <Collapsible trigger= 'Call Statistics'>
+            <p>Current Call Highscore: {highscore || "You haven't joined a call!"}</p>
+            <p>Current Call Lowscore: {lowscore || "You haven't joined a call!"}</p>
           </Collapsible>
         </div>
         <div className='Streak'>
@@ -45,11 +60,6 @@ export function ProfilePage({
             <p>Longest Good Night Streak: {streaks.gnHighscore}</p>
             <p>Current Good Morning Streak: {streaks.gmStreak}</p>
             <p>Longest Good Morning Streak: {streaks.gmHighscore}</p>
-          </Collapsible>
-        </div>
-        <div className='Lover'>
-          <Collapsible trigger='Lover Statistics'>
-            <p></p>
           </Collapsible>
         </div>
         </div>
