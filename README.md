@@ -16,8 +16,6 @@ To Do:
 
 - Fix Static Pages on the Website
 
-- Change call times to use mutable objects
-
 - Host on REPL.IT
 
 Contributions:

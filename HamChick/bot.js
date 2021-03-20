@@ -126,7 +126,7 @@ DiscordClient.on('message', async (message) => {
             userID: message.author.id
           }, user);
 
-          if (user.streaks.gnStreak % 5 == 0 || user.streaks.gnStreak == 69) {
+          if (user.streaks.gnStreak % 5 === 0 || user.streaks.gnStreak === 69) {
             return message.channel.send(`Good night! <@${user.userID}> is on a ${user.streaks.gnStreak} night streak! 🌕`);
           } else {
             return message.channel.send(`Good night <@${user.userID}>!`)
@@ -186,7 +186,7 @@ DiscordClient.on('message', async (message) => {
             userID: message.author.id
           }, user);
 
-          if (user.streaks.gmStreak % 5 == 0 || user.streaks.gmStreak == 69) {
+          if (user.streaks.gmStreak % 5 === 0 || user.streaks.gmStreak === 69) {
             return message.channel.send(`Good morning! <@${user.ID}> is on a ${user.streaks.gmStreak} day streak! 🌕`);
           } else {
             return message.channel.send(`Good morning <@${user.userID}>!`)
@@ -215,21 +215,14 @@ DiscordClient.on('voiceStateUpdate', async (oldState, newState) => {
   try {
     console.info('Got a voice update!')
     if (!oldState.channelID) {
-      const user = await UserConfig.findOne({
+      let user = await UserConfig.findOne({
         userID: oldState.id
       });
       if (user) {
-        await UserConfig.findOneAndUpdate({
+        user.callTimes.joinTime = new Date();
+        await UserConfig.updateOne({
           userID: oldState.id
-        }, {
-          callTimes: {
-            scores: user.callTimes.scores,
-            joinTime: new Date(),
-            highscore: user.callTimes.highscore,
-            lowscore: user.callTimes.lowscore,
-            ping: user.callTimes.ping
-          }
-        });
+        }, user);
         console.info("A user has been updated!.");
       } else {
         await UserConfig.create({
@@ -243,28 +236,26 @@ DiscordClient.on('voiceStateUpdate', async (oldState, newState) => {
         console.info("A user has been created!.");
       }
     } else if (!newState.channelID) {
-      const user = await UserConfig.findOne({
+      let user = await UserConfig.findOne({
         userID: oldState.id
       });
       const newScore = (Date.now() - (new Date(user.callTimes.joinTime)).getTime()) / 1000;
       let output = "";
       let special = "";
-      let highscore = user.callTimes.highscore;
-      let lowscore = user.callTimes.lowscore;
 
-      if (!highscore) {
+      if (!user.callTimes.highscore) {
         console.log("No Highscore Found!")
-        highscore = newScore;
-      } else if (highscore < newScore) {
-        highscore = newScore;
+        user.callTimes.highscore = newScore;
+      } else if (user.callTimes.highscore < newScore) {
+        user.callTimes.highscore = newScore;
         special = "That's a new highscore!"
       }
 
-      if (!lowscore) {
+      if (!user.callTimes.lowscore) {
         console.log("No Lowscore Found!")
-        lowscore = newScore
-      } else if (newScore < lowscore) {
-        lowscore = newScore
+        user.callTimes.lowscore = newScore
+      } else if (newScore < user.callTimes.lowscore) {
+        user.callTimes.lowscore = newScore
         special = "That's a new lowscore!"
       }
 
@@ -281,21 +272,13 @@ DiscordClient.on('voiceStateUpdate', async (oldState, newState) => {
         });
         if (server.logChannel) {
           const channel = server.logChannel;
-          oldState.guild.channels.cache.get(channel).send(("DISREGARD THIS MESSAGE: " + output + " " + special).trim());
+          oldState.guild.channels.cache.get(channel).send((output + " " + special).trim());
         }
       }
 
       await UserConfig.findOneAndUpdate({
         userID: oldState.id
-      }, {
-        callTimes: {
-          scores: [newScore, ...user.callTimes.scores],
-          joinTime: null,
-          highscore: highscore,
-          lowscore: lowscore,
-          ping: user.callTimes.ping
-        }
-      });
+      }, user);
     }
   } catch (err) {
     console.error(err);
